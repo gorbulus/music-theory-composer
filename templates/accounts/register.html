@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Register — Music Theory Composer{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-inner">
+    <div class="auth-title">NEW SAVE FILE</div>
+    <div class="auth-sub">CREATE YOUR ACCOUNT</div>
+
+    <div class="snes-container has-aged-yellow-bg">
+      <p class="snes-container-title has-nature-underline">PLAYER REGISTER</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="auth-field">
+            <label>{{ field.label|upper }}</label>
+            <div class="snes-input {% if field.errors %}is-error{% endif %}">
+              {{ field }}
+            </div>
+            {% if field.errors %}
+              <ul class="errorlist">
+                {% for err in field.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+            {% if field.help_text %}
+              <span class="field-help">{{ field.help_text }}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button class="snes-button has-nature-color full-w" type="submit" style="margin-top:8px;">
+          ✦ CREATE ACCOUNT
+        </button>
+      </form>
+
+      <div class="auth-link">
+        HAVE A SAVE FILE? <a href="{% url 'accounts:login' %}">LOGIN</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

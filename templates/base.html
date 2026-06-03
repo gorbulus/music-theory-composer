@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Music Theory Composer{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/snes.css@1.0.1/dist/snes.min.css">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+
+  <nav class="game-nav">
+    <div class="game-nav-left">
+      <span class="game-title">♪ MTC ♪</span>
+    </div>
+    <div class="game-nav-right">
+      {% if user.is_authenticated %}
+        <a href="{% url 'composer:saved_list' %}" class="snes-button has-galaxy-color nav-btn">SAVED</a>
+        <span class="player-tag">▶ {{ user.username }}</span>
+        <a href="{% url 'accounts:logout' %}" class="snes-button has-plumber-color nav-btn">QUIT</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="snes-button has-ocean-color nav-btn">LOGIN</a>
+        <a href="{% url 'accounts:register' %}" class="snes-button has-nature-color nav-btn">REGISTER</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  {% if messages %}
+    <div class="messages-bar">
+      {% for msg in messages %}
+        <div class="snes-blockquote {% if 'error' in msg.tags %}has-plumber-bg{% else %}has-nature-bg{% endif %} msg-block">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

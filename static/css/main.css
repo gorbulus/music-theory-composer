@@ -1,0 +1,482 @@
+/* ── SNES palette tokens ────────────────────────────────────── */
+:root {
+  --nature:    #4bb244;
+  --plumber:   #f22561;
+  --sunshine:  #f2c019;
+  --ocean:     #4eb6d9;
+  --turquoise: #40e0d0;
+  --phantom:   #9b5de5;
+  --rose:      #f784b2;
+  --galaxy:    #5a7d9a;
+  --ember:     #ff6f00;
+
+  /* semantic */
+  --root-clr:    var(--sunshine);
+  --chord-tone:  var(--ocean);
+  --scale-tone:  var(--nature);
+  --target-clr:  var(--turquoise);
+  --danger:      var(--plumber);
+
+  /* layout */
+  --nav-h: 52px;
+  --sidebar-w: 260px;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Body — deep SNES night sky ─────────────────────────────── */
+html, body {
+  height: 100%;
+  background: #1a0a2e;
+  /* subtle pixel-grid scanline effect */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,.08) 3px,
+    rgba(0,0,0,.08) 4px
+  );
+  color: #e8e0f0;
+  /* snes.css sets Press Start 2P; we keep it but override size */
+  font-size: 8px;
+  line-height: 1.8;
+  letter-spacing: .04em;
+}
+
+/* ── Typography helpers ──────────────────────────────────────── */
+.txt-sm  { font-size: 7px; }
+.txt-med { font-size: 9px; }
+.txt-lg  { font-size: 11px; }
+.txt-xl  { font-size: 14px; }
+.txt-dim { opacity: .65; }
+
+a { color: var(--ocean); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Nav ─────────────────────────────────────────────────────── */
+.game-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-h);
+  padding: 0 16px;
+  background: #0d0518;
+  border-bottom: 4px solid var(--phantom);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.game-title {
+  font-size: 11px;
+  color: var(--sunshine);
+  letter-spacing: .12em;
+  text-shadow: 3px 3px 0 var(--phantom);
+}
+.game-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.player-tag {
+  font-size: 7px;
+  color: var(--turquoise);
+  letter-spacing: .06em;
+}
+.nav-btn {
+  font-size: 7px !important;
+  padding: 6px 10px !important;
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+/* ── Messages ────────────────────────────────────────────────── */
+.messages-bar { padding: 10px 16px; }
+.msg-block { font-size: 7px; margin-bottom: 6px; }
+
+/* ── snes-container tweaks ───────────────────────────────────── */
+/* Give containers breathing room for the border-image outset */
+.snes-container {
+  margin: 8px;
+}
+.snes-container-title {
+  font-size: 8px !important;
+  margin-bottom: 8px;
+}
+
+/* ── Composer layout ─────────────────────────────────────────── */
+.composer-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.sidebar {
+  background: #110622;
+  border-right: 3px solid var(--phantom);
+  overflow-y: auto;
+  padding: 8px 4px 16px;
+}
+.sidebar-panel {
+  background: #f5f0e8 !important; /* aged yellow bg manually */
+}
+
+/* Form groups inside sidebar */
+.snes-form-group {
+  margin-bottom: 14px;
+}
+.snes-form-group label {
+  font-size: 7px !important;
+  color: #2c1654;
+  margin-bottom: 6px;
+  display: block;
+  letter-spacing: .08em;
+}
+
+/* Override snes-input internals for smaller size */
+.snes-input input,
+.snes-input select,
+.snes-input textarea {
+  font-size: 8px !important;
+  word-spacing: 0 !important;
+  padding: 4px 6px;
+  color: #1a0a2e !important;
+}
+.snes-input select option {
+  font-size: 8px;
+  background: #fff;
+  color: #1a0a2e;
+}
+
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px;
+  margin-top: 4px;
+}
+
+.snes-button {
+  font-size: 7px !important;
+  cursor: pointer;
+}
+.snes-button.full-w {
+  width: 100%;
+  text-align: center;
+  display: block;
+}
+
+/* ── View toggle ─────────────────────────────────────────────── */
+.view-toggle-row {
+  display: flex;
+  gap: 6px;
+  padding: 0 8px;
+}
+.view-toggle-row .snes-button {
+  flex: 1;
+  text-align: center;
+  opacity: .55;
+}
+.view-toggle-row .snes-button.active {
+  opacity: 1;
+}
+
+/* ── Saved combos in sidebar ─────────────────────────────────── */
+.saved-sidebar-title {
+  font-size: 7px;
+  color: var(--sunshine);
+  padding: 4px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+.saved-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+}
+.saved-sidebar-item {
+  background: #2a1245;
+  border: 2px solid var(--phantom);
+  padding: 6px 8px;
+}
+.saved-item-name {
+  font-size: 7px;
+  color: var(--ocean);
+  display: block;
+  margin-bottom: 3px;
+}
+.saved-item-meta {
+  font-size: 6px;
+  color: #9b86c0;
+  display: block;
+  margin-bottom: 5px;
+}
+.saved-item-btns {
+  display: flex;
+  gap: 4px;
+}
+
+/* ── Main panel ──────────────────────────────────────────────── */
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #150825;
+}
+
+/* ── Status bar ──────────────────────────────────────────────── */
+.status-bar {
+  padding: 6px 14px;
+  background: #0d0518;
+  border-bottom: 2px solid var(--phantom);
+  font-size: 7px;
+  color: var(--turquoise);
+  min-height: 26px;
+  letter-spacing: .06em;
+}
+.status-bar::before { content: "▶ "; }
+.status-bar.loading { color: var(--sunshine); animation: blink .7s step-end infinite; }
+
+@keyframes blink { 50% { opacity: .4; } }
+
+/* ── Tab bar ─────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 8px 10px 0;
+  background: #0d0518;
+  border-bottom: 3px solid var(--phantom);
+  flex-wrap: wrap;
+}
+.tab-bar .snes-button {
+  font-size: 7px !important;
+  padding: 6px 10px !important;
+  opacity: .5;
+  border-bottom: none;
+}
+.tab-bar .snes-button.active {
+  opacity: 1;
+}
+
+/* ── Tab content ─────────────────────────────────────────────── */
+.tab-content      { display: none; flex: 1; overflow-y: auto; padding: 12px; }
+.tab-content.active { display: block; }
+
+.empty-state {
+  font-size: 8px;
+  color: #6a5a8a;
+  padding: 32px 0;
+  text-align: center;
+  letter-spacing: .06em;
+}
+
+/* ── Progression panel ───────────────────────────────────────── */
+.progression-block { margin-bottom: 20px; }
+.progression-name {
+  font-size: 7px;
+  color: var(--sunshine);
+  letter-spacing: .08em;
+  margin-bottom: 10px;
+}
+.progression-chords { display: flex; flex-wrap: wrap; gap: 8px; }
+.prog-chord {
+  background: #f5f0e8;
+  border: none;
+  padding: 10px 14px;
+  min-width: 80px;
+  text-align: center;
+}
+.prog-degree { font-size: 6px; color: var(--galaxy); margin-bottom: 4px; }
+.prog-symbol { font-size: 11px; color: #1a0a2e; }
+.prog-notes  { font-size: 6px; color: #5a4a6a; margin-top: 4px; }
+
+/* ── Chords grid ─────────────────────────────────────────────── */
+.chords-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px;
+}
+.chord-card-inner { padding: 4px 2px; }
+.chord-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.chord-symbol-lbl { font-size: 11px; color: #1a0a2e; }
+.chord-degree-lbl { font-size: 6px; color: var(--galaxy); }
+.chord-notes-lbl  { font-size: 6px; color: #5a4a6a; margin-bottom: 8px; }
+.voicing-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.voicing-nav .snes-button { font-size: 6px !important; padding: 3px 6px !important; }
+.voicing-lbl { flex: 1; text-align: center; font-size: 6px; color: var(--galaxy); }
+.diagram-wrap { overflow-x: auto; }
+
+/* ── Scale section ───────────────────────────────────────────── */
+.scale-block { margin-bottom: 24px; }
+.scale-title  { font-size: 9px; color: #1a0a2e; margin-bottom: 8px; }
+.scale-notes-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.scale-note {
+  font-size: 7px;
+  padding: 4px 8px;
+  background: #f5f0e8;
+  color: #1a0a2e;
+  border: 2px solid #aaa;
+}
+.scale-note.is-root {
+  background: var(--sunshine);
+  color: #1a0a2e;
+  border-color: #c08800;
+}
+.position-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+.pos-btn {
+  font-size: 6px !important;
+  padding: 4px 8px !important;
+  opacity: .5;
+}
+.pos-btn.active { opacity: 1; }
+
+/* ── Arpeggio section ────────────────────────────────────────── */
+.arpeggio-block { margin-bottom: 24px; }
+.arpeggio-title { font-size: 9px; color: #1a0a2e; margin-bottom: 8px; }
+.arpeggio-notes { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.arp-note {
+  font-size: 7px;
+  padding: 3px 7px;
+  background: #f5f0e8;
+  color: #1a0a2e;
+  border: 2px solid #aaa;
+}
+.arp-note.is-root {
+  background: var(--sunshine);
+  color: #1a0a2e;
+  border-color: #c08800;
+}
+
+/* ── Improv map ──────────────────────────────────────────────── */
+.improv-block { margin-bottom: 24px; }
+.improv-title { font-size: 8px; color: #1a0a2e; margin-bottom: 10px; }
+.improv-legend { display: flex; gap: 16px; font-size: 6px; color: #5a4a6a; margin-bottom: 8px; }
+.legend-dot { display: inline-block; width: 8px; height: 8px; margin-right: 4px; vertical-align: middle; }
+.improv-notes { display: flex; flex-wrap: wrap; gap: 5px; }
+.improv-note {
+  font-size: 7px;
+  padding: 4px 10px;
+  border: 2px solid transparent;
+}
+.improv-note.target  { background: var(--turquoise); color: #0a1a1a; border-color: #28a89a; }
+.improv-note.passing { background: #f5f0e8; color: #5a4a6a; border-color: #ccc; }
+
+/* ── Auth pages ──────────────────────────────────────────────── */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--nav-h));
+  padding: 24px;
+}
+.auth-inner {
+  width: 100%;
+  max-width: 400px;
+}
+.auth-title {
+  font-size: 11px;
+  color: var(--sunshine);
+  text-align: center;
+  margin-bottom: 6px;
+  text-shadow: 2px 2px 0 var(--phantom);
+}
+.auth-sub {
+  font-size: 7px;
+  color: var(--ocean);
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: .06em;
+}
+.auth-link {
+  font-size: 7px;
+  text-align: center;
+  color: #9b86c0;
+  margin-top: 14px;
+}
+.auth-link a { color: var(--ocean); }
+
+/* Django form field wrappers in auth */
+.auth-field { margin-bottom: 16px; }
+.auth-field > label {
+  display: block;
+  font-size: 7px;
+  color: #2c1654;
+  margin-bottom: 6px;
+  letter-spacing: .06em;
+}
+.auth-field ul.errorlist { list-style: none; margin-top: 4px; }
+.auth-field ul.errorlist li { font-size: 6px; color: var(--plumber); }
+.field-help { font-size: 6px; color: #8a7aaa; margin-top: 4px; display: block; }
+
+/* ── Saved page ──────────────────────────────────────────────── */
+.saved-page { padding: 16px; max-width: 960px; margin: 0 auto; }
+.saved-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.saved-page-header h2 { font-size: 10px; color: var(--sunshine); }
+.saved-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px;
+}
+.saved-card-inner { padding: 6px 4px; }
+.saved-card-title  { font-size: 8px; color: #1a0a2e; margin-bottom: 8px; }
+.saved-card-meta   { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.tag {
+  font-size: 6px;
+  padding: 2px 6px;
+  background: var(--phantom);
+  color: #fff;
+  letter-spacing: .04em;
+}
+.saved-card-notes  { font-size: 7px; color: #5a4a6a; margin-bottom: 10px; }
+.saved-card-btns   { display: flex; gap: 6px; }
+
+/* ── SVG diagram colors (SNES palette) ───────────────────────── */
+/* Guitar chord chart */
+.chord-chart-nut    { stroke: #2c1654; }
+.chord-chart-string { stroke: #888; }
+.chord-chart-fret   { stroke: #bbb; }
+.chord-chart-dot    { fill: var(--phantom); }
+.chord-chart-root   { fill: var(--sunshine); }
+.chord-chart-barre  { fill: var(--phantom); opacity: .7; }
+.chord-chart-label  { fill: #555; font-size: 8px; }
+.chord-chart-fret-n { fill: #888; font-size: 8px; }
+
+/* Fretboard tab */
+.fretboard-label    { fill: #1a0a2e; font-size: 8px; text-anchor: middle; dominant-baseline: central; }
+.fretboard-string-n { fill: #aaa; font-size: 8px; text-anchor: middle; }
+.fretboard-fret-n   { fill: #888; font-size: 8px; text-anchor: middle; }
+
+/* Piano */
+.piano-white          { fill: #f8f4ec; stroke: #888; stroke-width: 1; }
+.piano-black          { fill: #1a0a2e; stroke: #0d0518; stroke-width: 1; }
+.piano-hl-white       { fill: var(--phantom); stroke: #6a3aaa; }
+.piano-hl-black       { fill: var(--phantom); stroke: #4a1a8a; }
+.piano-hl-root-white  { fill: var(--sunshine); stroke: #c08800; }
+.piano-hl-root-black  { fill: var(--sunshine); stroke: #c08800; }
+.piano-finger         { fill: #fff; font-size: 8px; text-anchor: middle; dominant-baseline: central; }
+.piano-note           { fill: #fff; font-size: 7px; text-anchor: middle; }
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0d0518; }
+::-webkit-scrollbar-thumb { background: var(--phantom); }

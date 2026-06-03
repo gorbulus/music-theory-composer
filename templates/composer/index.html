@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Composer — Music Theory Sidekick{% endblock %}
+
+{% block content %}
+<div class="composer-layout">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <div class="snes-container has-aged-yellow-bg sidebar-panel">
+      <p class="snes-container-title has-phantom-underline">SELECT KEY</p>
+
+      <div class="snes-form-group">
+        <label>ROOT NOTE</label>
+        <div class="snes-input">
+          <select id="root-select">
+            {% for note in root_notes %}
+              <option value="{{ note }}">{{ note }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="snes-form-group">
+        <label>SCALE / MODE</label>
+        <div class="snes-input">
+          <select id="quality-select">
+            {% for slug, display in qualities %}
+              <option value="{{ slug }}">{{ display }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="snes-form-group">
+        <label>GENRE</label>
+        <div class="snes-input">
+          <select id="genre-select">
+            <option value="">— NONE —</option>
+            {% for genre in genres %}
+              <option value="{{ genre.slug }}" data-id="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+    </div><!-- /snes-container -->
+
+    <div class="sidebar-actions">
+      <button class="snes-button has-ocean-color full-w" id="load-btn">▶ LOAD</button>
+    </div>
+
+    <div class="snes-container has-aged-yellow-bg sidebar-panel" style="margin-top:12px;">
+      <p class="snes-container-title has-sunshine-underline">VIEW</p>
+      <div class="view-toggle-row">
+        <button class="snes-button has-phantom-color active" id="guitar-btn" data-view="guitar">GUITAR</button>
+        <button class="snes-button has-galaxy-color" id="piano-btn" data-view="piano">PIANO</button>
+      </div>
+    </div>
+
+    <div class="snes-container has-aged-yellow-bg sidebar-panel" style="margin-top:12px;">
+      <p class="snes-container-title has-nature-underline">SAVE COMBO</p>
+      <div class="snes-form-group">
+        <label>NAME</label>
+        <div class="snes-input">
+          <input type="text" id="combo-name" placeholder="My combo...">
+        </div>
+      </div>
+      <div class="sidebar-actions" style="padding:0;">
+        <button class="snes-button has-nature-color full-w" id="save-btn">✦ SAVE</button>
+      </div>
+    </div>
+
+    {% if saved %}
+    <div style="margin-top: 12px;">
+      <div class="saved-sidebar-title">
+        <span>★ RECENT</span>
+        <a href="{% url 'composer:saved_list' %}" style="font-size:6px; color:var(--ocean);">VIEW ALL</a>
+      </div>
+      <div class="saved-sidebar-list">
+        {% for s in saved %}
+        <div class="saved-sidebar-item">
+          <span class="saved-item-name">{{ s.name }}</span>
+          <span class="saved-item-meta">{{ s.root_note }} {{ s.quality }} / {{ s.genre.name }}</span>
+          <div class="saved-item-btns">
+            <button class="snes-button has-ocean-color" style="font-size:6px!important;padding:3px 6px!important;"
+              onclick="loadSaved({{ s.id }})">LOAD</button>
+            <button class="snes-button has-plumber-color" style="font-size:6px!important;padding:3px 6px!important;"
+              onclick="deleteSaved({{ s.id }}, this)">DEL</button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </aside>
+
+  <!-- ── MAIN PANEL ─────────────────────────────────────────── -->
+  <div class="main-panel">
+
+    <div id="status-bar" class="status-bar">SELECT A KEY, SCALE AND GENRE TO BEGIN</div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="snes-button has-phantom-color tab active" data-tab="progressions">PROGRESSIONS</button>
+      <button class="snes-button has-ocean-color   tab" data-tab="chords">CHORDS</button>
+      <button class="snes-button has-nature-color  tab" data-tab="scales">SCALES</button>
+      <button class="snes-button has-ember-color   tab" data-tab="arpeggios">ARPEGGIOS</button>
+      <button class="snes-button has-turquoise-color tab" data-tab="improv" style="color:#0a1a1a!important;">IMPROV</button>
+    </div>
+
+    <!-- PROGRESSIONS -->
+    <div id="tab-progressions" class="tab-content active">
+      <div id="progressions-panel">
+        <p class="empty-state">LOAD A KEY + GENRE TO SEE PROGRESSIONS</p>
+      </div>
+    </div>
+
+    <!-- CHORDS -->
+    <div id="tab-chords" class="tab-content">
+      <div id="chords-panel">
+        <p class="empty-state">LOAD A KEY TO SEE DIATONIC CHORDS</p>
+      </div>
+    </div>
+
+    <!-- SCALES -->
+    <div id="tab-scales" class="tab-content">
+      <div id="scales-panel">
+        <p class="empty-state">LOAD A KEY TO SEE SCALES AND MODES</p>
+      </div>
+    </div>
+
+    <!-- ARPEGGIOS -->
+    <div id="tab-arpeggios" class="tab-content">
+      <div id="arpeggios-panel">
+        <p class="empty-state">LOAD A KEY TO SEE ARPEGGIOS</p>
+      </div>
+    </div>
+
+    <!-- IMPROV -->
+    <div id="tab-improv" class="tab-content">
+      <div id="improv-panel">
+        <p class="empty-state">LOAD A KEY TO SEE IMPROV MAPS</p>
+      </div>
+    </div>
+
+  </div><!-- /main-panel -->
+
+</div><!-- /composer-layout -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const CSRF        = "{{ csrf_token }}";
+  const SAVE_URL    = "{% url 'composer:save_combination' %}";
+  const THEORY_URL  = "{% url 'composer:theory_data' %}";
+</script>
+<script src="{% static 'js/diagrams.js' %}"></script>
+<script src="{% static 'js/composer.js' %}"></script>
+{% endblock %}

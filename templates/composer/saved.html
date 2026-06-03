@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Saved Combinations — MTC{% endblock %}
+{% block content %}
+<div class="saved-page">
+
+  <div class="saved-page-header">
+    <span class="saved-page-header-title" style="font-size:10px;color:var(--sunshine);">★ SAVED COMBOS</span>
+    <a href="{% url 'composer:index' %}" class="snes-button has-ocean-color">◀ BACK</a>
+  </div>
+
+  {% if saved %}
+    <div class="saved-grid">
+      {% for s in saved %}
+        <div class="snes-container has-aged-yellow-bg">
+          <div class="saved-card-inner">
+            <div class="saved-card-title">{{ s.name }}</div>
+            <div class="saved-card-meta">
+              <span class="tag">{{ s.root_note }} {{ s.quality }}</span>
+              <span class="tag">{{ s.genre.name }}</span>
+            </div>
+            {% if s.notes %}
+              <p class="saved-card-notes">{{ s.notes }}</p>
+            {% endif %}
+            <div class="saved-card-btns">
+              <a href="{% url 'composer:index' %}?load={{ s.id }}" class="snes-button has-ocean-color"
+                 style="font-size:7px!important;padding:5px 8px!important;">OPEN</a>
+              <button class="snes-button has-plumber-color"
+                      style="font-size:7px!important;padding:5px 8px!important;"
+                      onclick="deleteSaved({{ s.id }}, this)">DELETE</button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="snes-container has-aged-yellow-bg" style="max-width:400px;margin:40px auto;">
+      <p class="empty-state" style="color:#5a4a6a;">
+        NO SAVED COMBOS YET.<br><br>BUILD SOMETHING IN THE<br>COMPOSER AND SAVE IT.
+      </p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const CSRF = "{{ csrf_token }}";
+  function deleteSaved(id, btn) {
+    if (!confirm('Delete this combination?')) return;
+    fetch(`/api/delete/${id}/`, { method: 'POST', headers: { 'X-CSRFToken': CSRF } })
+      .then(r => r.json())
+      .then(() => btn.closest('.snes-container').remove());
+  }
+</script>
+{% endblock %}
